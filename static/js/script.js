@@ -7,6 +7,7 @@ canvas.width = canvas.offsetWidth;
 canvas.height = canvas.offsetHeight;
 
 let drawing = false;
+let saveTimeout = null;
 
 // Start drwing
 canvas.addEventListener('mousedown', (e) => {
@@ -19,6 +20,11 @@ canvas.addEventListener('mousedown', (e) => {
 canvas.addEventListener('mouseup', (e) => {
   drawing = false;
   ctx.beginPath();
+
+  // Start a timeout to save the canvas as PNG
+  saveTimeout = setTimeout(() => {
+    saveDrawing();
+  }, 5000);
 });
 
 // Draw on the canvas
@@ -34,6 +40,7 @@ canvas.addEventListener('mousemove', (e) => {
 // Clear the canvas
 clearBtn.addEventListener('click', () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  clearTimeout(saveTimeout);
 });
 
 // Send the drawing to the backend
