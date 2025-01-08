@@ -1,6 +1,7 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
-const clearBtn = document.getElementById('clear-btn')
+const clearBtn = document.getElementById('clear-btn');
+const outputText = document.getElementById('output-text');
 
 // Set canvas dimensions
 canvas.width = canvas.offsetWidth;
@@ -40,6 +41,7 @@ canvas.addEventListener('mousemove', (e) => {
 // Clear the canvas
 clearBtn.addEventListener('click', () => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  outputText.innerText = "Your output  will appear here."
   clearTimeout(saveTimeout);
 });
 
@@ -52,5 +54,11 @@ async function saveDrawing() {
     body: JSON.stringify({ image })
   });
   const result = await response.json();
-  document.getElementById('output-text').innerText = result.result;
+
+  // Update the output  area with the extracted text from the response
+  if (result.extracted_text) {
+    outputText.innerText = result.extracted_text;
+  } else {
+    outputText.innerText = "No text exctraced"
+  }
 }

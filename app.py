@@ -21,9 +21,12 @@ os.makedirs(UPLOAD_FOLDER, exist_ok = True)
 
 # Timer and tracking for the last saved image
 timer = None
+extracted_text = ""
 
 
 def text_extraction(image_path):
+    global extracted_text
+
     image_path = image_path.strip()
 
     try:
@@ -76,8 +79,17 @@ def text_extraction(image_path):
         with open(output_file_path, 'w') as json_file:
             json.dump(existing_data, json_file, indent = 4)
 
+        text = response.text
+
+        if text:
+            extracted_text = text
+        else:
+            extracted_text = "No text detected."
+
         # Display the text
-        print(response.text)
+        print(text)
+
+        return jsonify({"message": "Image saved successfully with white background!", "extracted_text": extracted_text}), 200
 
     except Exception as e:
         print(f"Error is extracting text: {e}")
@@ -106,38 +118,35 @@ def process_drawing():
 
         # Create a new image with a white background
         width, height = image.size
-        white_background = PIL.# Open the image with Pillow
-        image = Image.open(BytesIO(decoded))
-
-        # Create a new image with a white background
-        width, height = image.size
-        white_background = Image.new("RGBA", (width, height), (255, 255, 255, 255))  # White background
-        white_background.paste(image, (0, 0), image.convert("RGBA").split()[3])  # Paste image with transparency mask
-
-        # Save the image with the white background
-        image_path = os.path.join(UPLOAD_FOLDER, 'drawing_with_white_background.png')
-        white_background.save(image_path)Image.new("RGBA", (width, height), (255, 255, 255, 255))  # White background
+        white_background = PIL.Image.new("RGBA", (width, height), (255, 255, 255, 255))  # White background
         white_background.paste(image, (0, 0), image.convert("RGBA").split()[3])  # Paste image with transparency mask
 
         # Save the image with the white background
         image_path = os.path.join(UPLOAD_FOLDER, 'drawing_with_white_background.png')
         white_background.save(image_path)
 
-        """# Save the image for processing
-        image_path = os.path.join(UPLOAD_FOLDER, 'drawing.png')
-        with open(image_path, "wb") as f:
-            f.write(decoded)"""
+        # Function to handle text extraction
+        def extract():
+            #nonlocal extracted_text
+            with app.app_context():  # Ensure Flask app context for the thread
+                text_extraction(image_path)
 
         # Reset the timer
         if timer:
             timer.cancel()
 
         # Start a new timer
-        timer = threading.Timer(10.0, text_extraction, args = (image_path,))
+        timer = threading.Timer(10.0, extract)
         timer.start()
 
-        # Success response
-        return jsonify({"message": "Image saved successfully!", "image_path": image_path}), 200
+        # Wait for the thread to complete
+        timer.join()
+
+        # Return the extracted text after the thread finishes
+        return jsonify({
+            "message": "Image saved successfully with white background!",
+            "extracted_text": extracted_text
+        }), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
