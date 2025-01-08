@@ -31,9 +31,9 @@ body {
 }
 
 #clear-btn {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
+    position: fixed; /* Fixed position to stay at the bottom-right corner */
+    bottom: 20px; /* Distance from the bottom edge */
+    right: 20px; /* Distance from the right edge */
     padding: 10px 20px;
     font-size: 16px;
     background-color: #f44336;
