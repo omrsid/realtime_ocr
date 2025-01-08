@@ -10,13 +10,21 @@
 
 <body>
   <div class="container">
+
     <div id="writing-area">
       <canvas id="canvas"></canvas>
     </div>
+
     <div id="output-area">
       <h2>Output</h2>
       <p id="output-text">Your output will appear here.</p>
     </div>
+
+    <div id="writing-area">
+      <canvas id="canvas"></canvas>
+      <button id="clear-btn">Clear</button>
+    </div>
+
   </div>
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>

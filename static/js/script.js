@@ -1,5 +1,6 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
+const clearBtn = document.getElementById('clear-btn')
 
 // Set canvas dimensions
 canvas.width = canvas.offsetWidth;
@@ -7,20 +8,33 @@ canvas.height = canvas.offsetHeight;
 
 let drawing = false;
 
-canvas.addEventListener('mousedown', () => drawing = true);
-canvas.addEventListener('mouseup', () => drawing = false);
-canvas.addEventListener('mousemove', draw);
+// Start drwing
+canvas.addEventListener('mousedown', (e) => {
+  drawing = true;
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX, e.offsetY)
+});
 
-function draw(e) {
+// Stop drawing
+canvas.addEventListener('mouseup', (e) => {
+  drawing = false;
+  ctx.beginPath();
+});
+
+// Draw on the canvas
+canvas.addEventListener('mousemove', (e) => {
   if (!drawing) return;
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 4;
   ctx.lineCap = 'round';
   ctx.strokeStyle = 'black';
   ctx.lineTo(e.offsetX, e.offsetY);
   ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
-}
+});
+
+// Clear the canvas
+clearBtn.addEventListener('click', () => {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+});
 
 // Send the drawing to the backend
 async function saveDrawing() {
