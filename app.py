@@ -6,8 +6,11 @@ from flask import Flask, render_template, request, jsonify
 import os
 import base64
 from io import BytesIO
+from pathlib import Path
+from dotenv import load_dotenv
 
 # Config the Google AI API
+load_dotenv(Path("./.env"))
 API_KEY = os.getenv("GOOGLE_API_KEY")
 if not API_KEY:
     raise ValueError("API key not add to env variable")
