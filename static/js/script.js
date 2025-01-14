@@ -25,7 +25,7 @@ canvas.addEventListener('mouseup', (e) => {
   // Start a timeout to save the canvas as PNG
   saveTimeout = setTimeout(() => {
     saveDrawing();
-  }, 5000);
+  }, 3000);
 });
 
 // Draw on the canvas

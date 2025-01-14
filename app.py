@@ -10,7 +10,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 # Config the Google AI API
-load_dotenv(Path("./.env"))
+load_dotenv(Path("./."))
 API_KEY = os.getenv("GOOGLE_API_KEY")
 if not API_KEY:
     raise ValueError("API key not add to env variable")
@@ -156,4 +156,4 @@ def process_drawing():
 
 
 if  __name__ == '__main__':
-    app.run(debug = True)
+    app.run(host = "0.0.0.0", port = "7000", debug = True)
